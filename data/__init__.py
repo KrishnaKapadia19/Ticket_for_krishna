@@ -452,7 +452,7 @@ def load_mapper(
                 adjust_exppiries()
                 
                 logger.info(
-                f"finished downloading for index:{underlying_name} and segment is {file_type}  "
+                f"finished downloading for index:{underlying_name} and segment is {file_type} date is {date}  "
             )
         logger.info(f"File loading completed successfully.")
             # print("done for the filename, date", file_name, current_date)

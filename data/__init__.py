@@ -230,10 +230,10 @@ def reload_metadata(
             filtered_row = [
                 i,
                 single_row[1],
-                single_row[5] / 100,
-                single_row[6] / 100,
-                single_row[7] / 100,
-                single_row[8] / 100,
+                single_row[5],
+                single_row[6],
+                single_row[7],
+                single_row[8],
                 single_row[9],
                 single_row[10],
             ]
@@ -418,26 +418,42 @@ def load_mapper(
                     logger.info(
                         f"Issue in validating column for index:{underlying_name} and segment is {file_type}."
                     )
-                    continue
+                    break
                 # --- Process each row ---
-                for _, row in df.iterrows():
-                    date = int(row["date"])
-                    time = int(row["time"])
-                    symbol = str(row["symbol"])
-                    strike = float(row["strike"]) if "strike" in df.columns else None
-                    expiry = float(row["expiry"]) if "expiry" in df.columns else None
-                    open = float(row["open"])
-                    high = float(row["high"])
-                    low = float(row["low"])
-                    close = float(row["close"])
-                    volume = float(row["volume"]) if "volume" in df.columns else None
-                    oi = float(row["oi"]) if "oi" in df.columns else None
+                if file_type == StandardSegment.CALL and file_type==StandardSegment.PUT:
+                    for _, row in df.iterrows():
+                        date = int(row["date"])
+                        time = int(row["time"])
+                        symbol = str(row["symbol"])
+                        strike = float(row["strike"])
+                        expiry = float(row["expiry"]) 
+                        open = float(row["open"])
+                        high = float(row["high"])
+                        low = float(row["low"])
+                        close = float(row["close"])
+                        volume = float(row["volume"]) 
+                        oi = float(row["oi"]) 
 
-                    if symbol not in maper_dict[current_date]:
-                        maper_dict[current_date][symbol] = []
-                    maper_dict[current_date][symbol].append(
-                        [date,time,symbol,strike,expiry, open, high, low, close,volume,oi]
-                    )
+                        if symbol not in maper_dict[current_date]:
+                            maper_dict[current_date][symbol] = []
+                        maper_dict[current_date][symbol].append(
+                            [date,time,symbol,strike,expiry, open, high, low, close,volume,oi]
+                        )
+                elif file_type == StandardSegment.CASH:
+                    for _, row in df.iterrows():
+                        date = int(row["date"])
+                        time = int(row["time"])
+                        symbol = str(row["symbol"])
+                        open = float(row["open"])
+                        high = float(row["high"])
+                        low = float(row["low"])
+                        close = float(row["close"])
+
+                        if symbol not in maper_dict[current_date]:
+                            maper_dict[current_date][symbol] = []
+                        maper_dict[current_date][symbol].append(
+                            [date,time,symbol, open, high, low, close]
+                        )
 
                 # --- Deduplicate and update metadata ---
                 all_data = [
@@ -452,7 +468,7 @@ def load_mapper(
                 adjust_exppiries()
                 
                 logger.info(
-                f"finished downloading for index:{underlying_name} and segment is {file_type}  and date is  {date} "
+                f"finished downloading for index:{underlying_name} and segment is {file_type}   "
             )
         logger.info(f"File loading completed successfully.")
             # print("done for the filename, date", file_name, current_date)

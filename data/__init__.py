@@ -366,7 +366,7 @@ def load_mapper(
             maper_dict[current_date] = {}
         for underlying_name in UNIVERSAL_NSE_INDEXES:
             for file_type in StandardSegment:
-                if file_type in [StandardSegment.FUT]:
+                if file_type == StandardSegment.FUT:
                 # Currently issue in the same symbol name issue for all futures
                 # Thus not loading the data for that cases.
                     continue
